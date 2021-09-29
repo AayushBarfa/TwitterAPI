@@ -3,7 +3,7 @@ const sessions = require('express-session');
 const express=require("express");
 const User=require("../models/user.js");
 const controller = require("../controller/authController");//controller imported
-
+require('dotenv').config()
 const router = express.Router();
 
 
@@ -18,10 +18,10 @@ const oneDay = 1000 * 60 * 60 * 24;
 
 //session middleware
 router.use(sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    secret: process.env.SESSION_SECRET,
     saveUninitialized:true,
     cookie: { maxAge: oneDay },
-    resave: false
+    resave: true
 }));
 
 // parsing the incoming data
@@ -56,7 +56,7 @@ router.post('/user/login',(req,res,next) => {
         session=req.session;
         session.userid=req.body.username;
         console.log(req.session)
-        res.send(`Hey there, welcome <a href='/user/logout'>click to logout</a>`);
+        res.json(result);
     }
     else{
         res.status(400).send('Invalid username or password');
@@ -66,14 +66,14 @@ router.post('/user/login',(req,res,next) => {
 //---------------------------------------------------------
 
 
-router.get('/user/logout',(req,res) => {                  //logging out user and destroying the session
+router.get('/user/logout',(req,res) => {                           //logging out user and destroying the session
     req.session.destroy();
     res.redirect('/');
 });
 
 
 
-router.get('/user/register',(req,res)=>{                 //render register page 
+router.get('/user/register',(req,res)=>{                          //render register page 
     res.render('register')
 })
 

@@ -3,6 +3,8 @@ const mongoose=require("mongoose");
 const authRoute = require("./routes/auth");
 const activeUserRoute =require("./routes/activeUser");
 const tweetRoute=require("./routes/tweetsRoute");
+require('dotenv').config()
+
 
 const port= process.env.PORT || 4000; //setting port 
 
@@ -16,12 +18,12 @@ app.set('view engine', 'ejs');
 
 
 //db connected
-const dbURI="mongodb+srv://AayushMongoose:newpassword1234@cluster0.0dt7p.mongodb.net/Twitterdb?retryWrites=true&w=majority";
+const dbURI=process.env.DB_KEY;       //key stored in env variable
 mongoose.connect(dbURI,{useNewUrlParser: true, useUnifiedTopology: true})
   .then(result =>{
     console.log("connect to db");
     
-    // server running on localhost:3000
+    // server running on localhost:(port define above)
     app.listen(port,()=>{console.log(`running on localhost:${port}`)});
   })
   .catch(err => console.log(err,"error"));
@@ -44,5 +46,9 @@ app.use((req, res) => {
 
 
 app.use((err,req,res,next)=>{
+  console.log(err.message);
   res.status(500).json({error: err.message });
 })
+
+
+module.exports=app;

@@ -2,11 +2,10 @@ const User=require("../models/user.js");
 
 //home page for session checking if session is present then provide logout botton and if not then redirect to login page  
 const get_index=(req,res) => {
-    session=req.session;
-    if(session.userid){
-        res.send("Welcome User <a href='/user/logout'>click to logout</a>");
+    if(req.session.userid){
+        res.status(200).send("session is created");
     }else
-    res.redirect('/user/login')
+    res.status(200).send("session not created");
 }
 
 
@@ -21,12 +20,14 @@ const post_register_newuser=(req,res,next) => {
    .then((existUsername)=>{
     if (existUsername) {
       console.log('username taken');
-      res.send("<script>alert('username is already taken!');</script>");
-      res.end();
+      res.status(400).json({invalid : 1});
     }
     else{
-        user.save();
-       res.redirect('/user/login');
+      console.log('new user');
+      user.save()
+      .then(result =>res.status(201).json(result))
+      .catch(err=>next(err))
+        
     }})
     .catch(err=>next(err));  
  }

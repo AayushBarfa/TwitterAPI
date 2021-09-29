@@ -9,30 +9,36 @@ const add_tweet_post=(req,res,next)=>{
         body:req.body.body
     })
     tweet.save()
-    .then(result=>res.send(result))
+    .then(result=>res.status(201).send(result))
     .catch(err=>{next(err);})}
     else{
-        res.send("login first");
+        res.status(401).send("login first");
     }
 }
 
 //delete req which deletes tweet
 const delete_tweet=(req,res,next)=>{
-    Tweet.findByIdAndDelete({_id:req.params.id})
-    .then(result=>res.send(result))
-    .catch(err=>next(err))
+    if(req.session.userid){
+    Tweet.findOneAndDelete({_id:req.params.id,username:req.session.userid})
+    .then(result=>res.status(201).send(result))
+    .catch(err=>next(err))}
+    else{
+        res.status(401).send("login first");
+    }
 }
 
-
+//get request for reading the data of tweet 
 const get_tweet=(req,res,next)=>{
+    console.log(req.params.id)
     if(req.session.userid){
-    Tweet.findOne({username:req.session.userid,_id:req.params.id})
+    Tweet.findById(req.params.id)
     .then((result)=>{
         res.send(result);
     })
     .catch(err=>{next(err)})
     }
     else{
+        console.log("login first");
         res.send("login first");
     }
 }
@@ -42,5 +48,5 @@ const get_tweet=(req,res,next)=>{
 module.exports={
     add_tweet_post,
     delete_tweet,
-    get_tweet
+    get_tweet,
 }

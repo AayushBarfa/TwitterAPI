@@ -1,0 +1,11 @@
+1- login   --  session    --
+2- register  
+
+3-follow
+4-unfollow
+
+5- create
+6- delete
+7- read
+
+8- testing

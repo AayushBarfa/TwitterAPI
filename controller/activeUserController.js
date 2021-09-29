@@ -1,20 +1,26 @@
 const Following=require("../models/Follower");
 
 const follow_post=(req,res,next)=>{
-    const follow = new Following({
+    console.log(req.session.userid,req.params.username);
+    if(req.session.userid){
+    var follow = new Following({
         username : req.session.userid,
         following: req.params.username
     });
+    }
+    else{
+        res.status(401).send("login first");
+    }
     Following.findOne({username:follow.username, following:follow.following})
     .then(result=>{
         if(result){
             console.log("already following");
-            res.send("already following");
+            res.status(400).json({status:"false"});
         }
         else{
             follow.save()
-            .then(result=>{res.json({status:"true"});})
-            .catch(err=>{console.log(err)})   
+            .then(result=>{res.status(201).json({status:"true"});})
+            .catch(err=>{next(err)})   
         }
     })
     .catch(err=>{next(err)}); 
@@ -22,11 +28,10 @@ const follow_post=(req,res,next)=>{
 
 
  const unfollow_delete= (req,res,next)=>{
-    
     Following.findOneAndDelete({username: req.session.userid, following:req.params.username})
     .then(result=>{
         if(result){
-        
+            
             res.send("unfollow");
         }
         else{
