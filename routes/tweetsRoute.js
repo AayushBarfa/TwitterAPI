@@ -3,7 +3,7 @@ const controller=require("../controller/tweetController");           //reqire co
 const router=express.Router();
 
 
-router.post('/tweet/post',controller.add_tweet_post);               //route for adding the tweet
+router.post('/tweet/post',controller.add_tweet_post);                //route for adding the tweet
 
 router.delete('/tweet/delete/:id',controller.delete_tweet);          //route for deleting the tweet 
 

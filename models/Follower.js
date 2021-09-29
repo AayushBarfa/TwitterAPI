@@ -10,7 +10,8 @@ const followingSchema = new schema({
     following:{
         type : String,
         required: true
-    }
+    },
+   
 
 }, {timestamps:true})
 
